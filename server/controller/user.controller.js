@@ -8,117 +8,133 @@ dotenv.config();
 
 const userController = {
   registerUser: async (req, res) => {
-    // check all fields are required
+    try {
+      // check all fields are required
+      const { username, firstName, lastName, email, password } = req.body;
 
-    const { username, firstName, lastName, email, password } = req.body;
-    // console.log(req.body);
-    // console.log(username);
-    // console.log(email);
-    if (!username || !firstName || !lastName || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
-    const isEmailExist = await userService.getUserByEmail(email);
-    if (isEmailExist.length) {
-      //   console.log(isEmailExist);
+      if (!username || !firstName || !lastName || !email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: "All fields are required",
+        });
+      }
+
+      const isEmailExist = await userService.getUserByEmail(email);
+
+      if (isEmailExist.length) {
+        return res.status(500).json({
+          success: false,
+          message: "Email is already used",
+        });
+      }
+
+      // password encryption
+      const saltRounds = 10;
+      const salt = bcrypt.genSaltSync(saltRounds);
+      req.body.userPassword = bcrypt.hashSync(password, salt);
+
+      // generate otp that is used to verify the user
+      req.body.OTP = userUtility.generateDigitOTP();
+      console.log(req.body.OTP);
+
+      const registerUser = await userService.insertInToUser(req.body);
+
+      // extract user id from the user table
+      req.body.userId = registerUser.insertId;
+
+      // Inserting password into the database
+      const isPasswordAdded = await userService.insertInToUserPassword(
+        req.body
+      );
+
+      if (isPasswordAdded) {
+        res.status(200).json({
+          success: true,
+          message: "User created successfully",
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Error in registration",
+        });
+      }
+    } catch (error) {
+      console.error("Error in registerUser:", error);
       return res.status(500).json({
         success: false,
-        message: "Email is already used",
+        message: "Internal server error",
       });
     }
-
-    //  if the email didn't exist we can create the account by it
-    // password encryption
-    const saltRounds = 10;
-    const salt = bcrypt.genSaltSync(saltRounds);
-    req.body.userPassword = bcrypt.hashSync(password, salt);
-    // generate otp that is used to verify the user
-
-    req.body.OTP = userUtility.generateDigitOTP();
-    console.log(req.body.OTP);
-
-    const registerUser = await userService.insertInToUser(req.body);
-    // extract user id from the user table
-    req.body.userId = registerUser.insertId;
-    // Send OTP by email
-    // userUtility.sendEmail(email, OTP).then(async () => {
-    // Inserting password into the database
-    const isPasswordAdded = await userService.insertInToUserPassword(req.body);
-    if (isPasswordAdded) {
-      res.status(200).json({
-        success: true,
-        message: "User created successfully",
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "error in registration",
-      });
-    }
-    // });
   },
+
   loginUser: async (req, res) => {
-    const { email, password } = req.body;
+    try {
+      const { email, password } = req.body;
 
-    // Check if all fields are given
-    if (!email || !password) {
-      return res.json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
+      // Check if all fields are given
+      if (!email || !password) {
+        return res.json({
+          success: false,
+          message: "All fields are required",
+        });
+      }
 
-    const isUserExist = await userService.getUserByEmail(email);
+      const isUserExist = await userService.getUserByEmail(email);
 
-    // If there is no account related to this email
-    if (!isUserExist.length) {
+      // If there is no account related to this email
+      if (!isUserExist.length) {
+        return res.status(500).json({
+          success: false,
+          message: "No account exists with this email",
+        });
+      }
+
+      const userId = isUserExist[0].userId;
+      const checkedUserPassword = await userService.getUserPasswordByUserId(
+        userId
+      );
+
+      if (!checkedUserPassword) {
+        return res.status(500).json({
+          success: false,
+          message: "Password does not exist",
+        });
+      }
+
+      const dbPassword = checkedUserPassword[0].userPassword;
+      const isMatch = bcrypt.compareSync(password, dbPassword);
+
+      if (!isMatch) {
+        return res.status(500).json({
+          success: false,
+          message: "Incorrect password",
+        });
+      } else {
+        const token = jwt.sign({ userId, email }, process.env.JWT_SECRET);
+        return res.status(200).json({
+          token,
+          userId,
+          email,
+          success: true,
+          message: "Login successfully",
+        });
+      }
+    } catch (error) {
+      console.error("Error in loginUser:", error);
       return res.status(500).json({
         success: false,
-        message: "No account exists with this email",
-      });
-    }
-
-    const userId = isUserExist[0].userId;
-    const checkedUserPassword = await userService.getUserPasswordByUserId(
-      userId
-    );
-
-    if (!checkedUserPassword) {
-      return res.status(500).json({
-        success: false,
-        message: "Password does not exist",
-      });
-    }
-
-    const dbPassword = checkedUserPassword[0].userPassword;
-    const isMatch = bcrypt.compareSync(password, dbPassword);
-
-    if (!isMatch) {
-      return res.status(500).json({
-        success: false,
-        message: "Incorrect password",
-      });
-    } else {
-      const token = jwt.sign({ userId, email }, process.env.JWT_SECRET);
-      return res.status(200).json({
-        token,
-        userId,
-        email,
-        success: true,
-        message: "Login successfully",
+        message: "Internal server error",
       });
     }
   },
-  // Forget password
+
   forgetPassword: async (req, res) => {
     try {
       const { email } = req.body;
 
       // Validate the request values
       if (!email) {
-        res.json({
+        return res.status(400).json({
           success: false,
           message: "All fields are required",
         });
@@ -140,23 +156,23 @@ const userController = {
         const OTP = await userUtility.generateDigitOTP();
         req.body.OTP = OTP;
 
-        console.log(OTP);
-        console.log(req.body.OTP);
-        // userUtility.sendEmail(email, OTP).then(async () => {
-        const isNewOTPAdded = await userService.updateOTP(req.body);
-        console.log(isNewOTPAdded);
-        if (!isNewOTPAdded) {
-          return res.status(500).json({
-            success: false,
-            message: "Error during sending email",
-          });
-        } else {
-          return res.status(200).json({
-            success: true,
-            message: "OTP sent successfully",
-          });
-        }
-        // });
+        // console.log(OTP);
+        // console.log(req.body.OTP);
+        userUtility.sendEmail(email, OTP).then(async () => {
+          const isNewOTPAdded = await userService.updateOTP(req.body);
+          console.log(isNewOTPAdded);
+          if (!isNewOTPAdded) {
+            return res.status(500).json({
+              success: false,
+              message: "Error during sending email",
+            });
+          } else {
+            return res.status(200).json({
+              success: true,
+              message: "OTP sent successfully",
+            });
+          }
+        });
       }
     } catch (error) {
       console.error("Error in forgetPassword:", error);
