@@ -21,7 +21,7 @@ const userService = {
   },
 
   // get  OTP by userEmail
-  getOTPByUserEmail: (userEmail, otp) => {
+  getOTPByUserEmail: (userEmail) => {
     const rows = query(usersQuery.getOTPByUserEmail, [userEmail]);
     return rows;
   },
@@ -29,6 +29,35 @@ const userService = {
   // get user password by user ID, ordered by created date ascending
   getUserPasswordsByUserId: (userId) => {
     const rows = query(usersQuery.getUserPasswordsByUserId, [userId]);
+    return rows;
+  },
+  // Insert user data into the users table
+  insertInToUser: (data) => {
+    console.log(data);
+    const rows = query(usersQuery.insertInToUser, [
+      data.username,
+      data.firstName,
+      data.lastName,
+      data.email,
+      data.OTP,
+    ]);
+    return rows;
+  },
+
+  // Insert user password data into the userPassword table
+  insertInToUserPassword: (data) => {
+    const rows = query(usersQuery.insertInToUserPassword, [
+      data.userId,
+      data.userPassword,
+    ]);
+    return rows;
+  },
+  updateOTP: (data) => {
+    const rows = query(usersQuery.updateOTP, [data.OTP, data.userId]);
+    return rows;
+  },
+  confirmOTPByEmail: async (email, otp) => {
+    const rows = await query(usersQuery.confirmOTPByEmail, [otp, email]);
     return rows;
   },
 };

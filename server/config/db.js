@@ -18,13 +18,7 @@ const connection = mysql.createPool({
 });
 
 async function query(sql, params) {
-  const [rows, fields] = await connection.execute(sql, params, (err, res) => {
-    if (err) {
-      console.log(err.message);
-    } else {
-      console.log("db connected");
-    }
-  });
+  const [rows, fields] = await connection.execute(sql, params);
   return rows;
 }
 

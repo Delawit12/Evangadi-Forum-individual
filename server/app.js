@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();
 import install from "./config/install.js";
+import appRoute from "./routes/index.js";
 
 // const port = 8888;
 // const host = "192.168.1.4";
@@ -22,7 +23,7 @@ server.use(cors(corsOptions));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
-// server.use(appRoute);
+server.use(appRoute);
 
 server.get("/", (req, res) => {
   res.send("the server is running on the specified port");
