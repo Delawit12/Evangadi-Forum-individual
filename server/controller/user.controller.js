@@ -2,7 +2,7 @@ import userService from "../service/user.service.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import userUtility from "../utility/user.utility.js";
-// import nodemailer from "nodemailer";
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 

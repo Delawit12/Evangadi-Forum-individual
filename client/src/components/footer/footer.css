@@ -1,0 +1,57 @@
+.Footer{
+    height: 300px;
+    background-color: #3B455A;
+}
+ul {
+    list-style-type: none;
+}
+.logo{
+    width: 190px;
+    object-fit: contain;
+}
+.row div a {
+    color: white;
+   text-align: center;
+}
+/* .cir_br > div{
+    text-align: center;
+    border-radius: 250%;
+    border: 1px solid white;
+} */
+.col-2 svg {
+    font-size: 38px;
+    text-align: center;
+}
+
+.row div a :hover{
+    color: #D5D5D599;
+}
+.col-2 :hover{
+    color: white;
+    
+}
+.footer_t{
+    color: white;
+}
+
+.row{
+
+}
+.row ul{
+    text-decoration: none;
+
+}
+
+.row ul li {
+    color: white;
+}
+.row ul li a{
+    color: white;
+    text-decoration: none;
+}
+.row ul li a:hover{
+    color: white;
+}
+.footer_dwn >div .row{
+    display: block;
+}

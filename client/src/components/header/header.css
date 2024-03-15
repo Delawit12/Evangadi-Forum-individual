@@ -1,0 +1,35 @@
+.header{
+    border-bottom: 2px solid #3b455a3f
+}
+
+.linkcontainer > ul{
+    list-style-type: none;
+}
+
+.linkcontainer > ul >li {
+    font-size: 16px;
+}
+.subcont{
+    justify-content: space-between;
+}
+.imageconainer > .logo{
+    /* width: 150px; */
+}
+
+#onelink{
+    color: black;
+    text-decoration: none;
+}
+#onelink:hover{
+    color: #ff8500;
+}
+.false:hover{
+    color: #ff8500;
+}
+.responsive-navbar-nav:hover{
+    color: #ff8500;
+}
+.icon_coll:hover{
+    color: #ff8500;
+    background-color: #ff8500;
+}
