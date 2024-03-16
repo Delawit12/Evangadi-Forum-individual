@@ -14,7 +14,7 @@ const connection = mysql.createPool({
   password,
   user,
   database,
-  connectionLimit: 20,
+  connectionLimit: 50,
 });
 
 async function query(sql, params) {
