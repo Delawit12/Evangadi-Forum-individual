@@ -110,14 +110,28 @@ const userController = {
           message: "Incorrect password",
         });
       } else {
-        const token = jwt.sign({ userId, email }, process.env.JWT_SECRET);
-        return res.status(200).json({
+        const token = jwt.sign(
+          { id: userId, userEmail: email },
+          process.env.JWT_SECRET,
+          { expiresIn: "30m" }
+        );
+        return res.json({
           token,
-          userId,
-          email,
-          success: true,
-          message: "Login successfully",
+          user: {
+            id: userId,
+            userEmail: email,
+            success: true,
+            message: "Login successfully",
+          },
         });
+        // const token = jwt.sign({ userId, email }, process.env.JWT_SECRET);
+        // return res.status(200).json({
+        //   token,
+        //   userId,
+        //   email,
+        //   success: true,
+        //   message: "Login successfully",
+        // });
       }
     } catch (error) {
       console.error("Error in loginUser:", error);
@@ -182,10 +196,11 @@ const userController = {
       });
     }
   },
-
   confirmOTP: async (req, res) => {
+    // console.log(req.body);
     try {
       const { email, OTP } = req.body;
+      // console.log(email);
 
       // Validate the request values
       if (!email || !OTP) {
@@ -236,18 +251,25 @@ const userController = {
   },
   newPassword: async (req, res) => {
     try {
-      const { userId, newPassword } = req.body;
-
+      // const userId = req.body.Id;
+      const { email, newPassword } = req.body;
+      console.log(req.body);
+      console.log("back end password:", email);
       // Validate the request values
-      if (!userId || !newPassword) {
+      if (!email || !newPassword) {
         return res.json({
           success: false,
           message: "All fields are required",
         });
       }
+      const getUserByEmail = await userService.getUserByEmail(email);
+      const userId = getUserByEmail[0].userId;
+      req.body.userId = userId;
 
       // Compare with previous passwords
-      const isUserPassword = await userService.getUserPasswordByUserId(userId);
+      const isUserPassword = await userService.getUserPasswordByUserEmail(
+        email
+      );
       for (let i = 0; i < isUserPassword.length; i++) {
         let dbPassword = isUserPassword[i].userPassword;
         const isMatch = bcrypt.compareSync(newPassword, dbPassword);

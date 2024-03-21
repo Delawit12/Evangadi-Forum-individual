@@ -25,6 +25,15 @@ const userService = {
   },
 
   // get user password by user ID
+  getUserPasswordByUserEmail: (userEmail) => {
+    try {
+      const rows = query(usersQuery.getUserPasswordByUserEmail, [userEmail]);
+      return rows;
+    } catch (error) {
+      console.error("Error in getUserPasswordByUserId:", error);
+      throw error;
+    }
+  },
   getUserPasswordByUserId: (userId) => {
     try {
       const rows = query(usersQuery.getUserPasswordByUserId, [userId]);

@@ -3,10 +3,10 @@ import userController from "../controller/user.controller.js";
 import auth from "../auth/auth.js";
 const userRoute = express.Router();
 
-userRoute.post("/api/user/register", userController.registerUser);
-userRoute.post("/api/users/login", userController.loginUser);
-userRoute.post("/api/users/forgetPassword", userController.forgetPassword);
-userRoute.post("/api/users/conformation", userController.confirmOTP);
-userRoute.post("/api/users/newPassword", auth, userController.newPassword);
+userRoute.post("/register", userController.registerUser);
+userRoute.post("/login", userController.loginUser);
+userRoute.post("/forgetPassword", userController.forgetPassword);
+userRoute.post("/conformation", userController.confirmOTP);
+userRoute.post("/newPassword", userController.newPassword);
 
 export default userRoute;

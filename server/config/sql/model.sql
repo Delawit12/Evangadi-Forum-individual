@@ -1,9 +1,9 @@
--- Active: 1710243192035@@127.0.0.1@3306@evangadi
+-- Active: 1710243192035@@127.0.0.1@3306
 -- CREATE DATABASE evangadi
 
 -- drop DATABASE evangadi
 
--- use evangadi
+-- use evangadiforum
 
 CREATE TABLE IF NOT EXISTS users (
     userId INT AUTO_INCREMENT NOT NULL, username VARCHAR(50) UNIQUE NOT NULL, firstName VARCHAR(50), lastName VARCHAR(50), email VARCHAR(255) UNIQUE NOT NULL, otp VARCHAR(10), insertedDatetime DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (userId)

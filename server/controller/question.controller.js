@@ -2,19 +2,22 @@ import questionService from "../service/question.service.js";
 
 const questionController = {
   insertQuestion: async (req, res) => {
-    const userId = req.body.Id;
+    // const userId = req.body.Id;
+    const { userId, question, questionDescription, category } = req.body;
     console.log(userId);
-    const { question, questionDescription, category } = req.body;
-    req.body.userId = userId;
+    console.log(question);
+    console.log(questionDescription);
+    console.log(category);
+    // req.body.userId = userId;
 
     // check all felids are required
-    if (!question || !userId) {
+    if (!question || !userId || !questionDescription || !category) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
-
+    console.log("req.body:", req.body);
     // insert the question to the table
     const isQuestionInserted = questionService.insertQuestion(req.body);
 
@@ -33,7 +36,16 @@ const questionController = {
   getAllQuestions: async (req, res) => {
     try {
       // Call the service method to fetch all questions
-      const questions = await questionService.getAllQuestions();
+      const questions = await questionService
+        .getAllQuestions
+        // (err, questions) => {
+        //   if (err) {
+        //     console.log(err);
+        //     return res.status(500).json({ msg: "database connection error" });
+        //   }
+        //   return res.status(200).json({ data: questions });
+        // }
+        ();
 
       // Send the questions as a response
       if (questions) {
@@ -48,8 +60,9 @@ const questionController = {
     }
   },
   getSingleQuestion: async (req, res) => {
-    const questionId = req.params.questionId;
-
+    console.log("req.params.id", req.params.id);
+    const questionId = req.params.id;
+    console.log("questionId", questionId);
     try {
       // Retrieve question from the database based on question ID
       const question = await questionService.getQuestionByQuestionId(

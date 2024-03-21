@@ -10,6 +10,10 @@
   "author": "mekdelawit",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/icons": "^4.11.3",
+    "@mui/icons-material": "^5.15.13",
+    "@mui/material": "^5.15.13",
+    "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

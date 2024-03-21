@@ -4,18 +4,8 @@ import auth from "../auth/auth.js";
 
 const questionRoute = express.Router();
 
-questionRoute.post(
-  "/api/questions/askQuestion",
-  auth,
-  questionController.insertQuestion
-);
-questionRoute.get(
-  "/api/questions/allQuestions",
-  questionController.getAllQuestions
-);
-questionRoute.get(
-  "/api/questions/getSingleQuestion:questionId",
-  questionController.getSingleQuestion
-);
+questionRoute.post("/askQuestion", questionController.insertQuestion);
+questionRoute.get("/", questionController.getAllQuestions);
+questionRoute.get("/id", questionController.getSingleQuestion);
 
 export default questionRoute;

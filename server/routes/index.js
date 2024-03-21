@@ -8,9 +8,9 @@ import answerRoute from "./answer.route.js";
 // import profileRoute from "./profile.route.js";
 
 // adding to Middleware
-appRoute.use(userRoute);
-appRoute.use(questionRoute);
-appRoute.use(answerRoute);
+appRoute.use("/api/users", userRoute);
+appRoute.use("/api/questions", questionRoute);
+appRoute.use("/api/answers", answerRoute);
 // appRoute.use(profileRoute);
 
 export default appRoute;

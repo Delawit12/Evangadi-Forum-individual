@@ -15,7 +15,7 @@ const questionService = {
   },
 
   // Get a single question by question ID
-  getQuestionByQuestionId: async ([questionId]) => {
+  getQuestionByQuestionId: async (questionId) => {
     try {
       const rows = await query(
         questionQueries.getQuestionByQuestionId,
@@ -31,12 +31,12 @@ const questionService = {
   // Insert a new question into the questions table
   insertQuestion: async (data) => {
     try {
-      const { question, questionDescription, category, userId } = data;
+      // const { question, questionDescription, category, userId } = data;
       const rows = await query(questionQueries.insertInToQuestion, [
-        question,
-        questionDescription,
-        category,
-        userId,
+        data.question,
+        data.questionDescription,
+        data.category,
+        data.userId,
       ]);
       return rows;
     } catch (error) {

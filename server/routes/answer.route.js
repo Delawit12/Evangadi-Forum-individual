@@ -5,16 +5,9 @@ import auth from "../auth/auth.js";
 const answerRoute = express.Router();
 
 // Route to insert a new answer
-answerRoute.post(
-  "/api/answers/insertAnswer",
-  auth,
-  answerController.insertAnswer
-);
+answerRoute.post("/insertAnswer", auth, answerController.insertAnswer);
 
 // Route to get answer details by ID
-answerRoute.get(
-  "/api/answers/getAnswer/:answerId",
-  answerController.getAnswerDetailsById
-);
+answerRoute.get("/getAnswer/:answerId", answerController.getAnswerDetailsById);
 
 export default answerRoute;

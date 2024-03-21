@@ -3,6 +3,12 @@ export default {
   getUserByUserId: `SELECT * FROM users WHERE userId = ?;`,
   getUserByEmail: `SELECT * FROM users WHERE email = ?;`,
   getOTPByUserEmail: `SELECT otp FROM users WHERE email = ?; `,
+  getUserPasswordByUserEmail: `SELECT userPassword.userPassword
+    FROM users
+    JOIN userPassword ON users.userId = userPassword.userId
+    WHERE users.email =?
+    ORDER BY userPassword.createdDate DESC
+    LIMIT 1;`,
   getUserPasswordByUserId: `SELECT * FROM userPassword WHERE userId = ? ORDER BY createdDate DESC LIMIT 1`,
 
   // Insert Queries
