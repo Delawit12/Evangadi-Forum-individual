@@ -21,7 +21,6 @@ FROM
   LEFT JOIN users ua ON a.userId = ua.userId
   LEFT JOIN userProfile uaf ON ua.userId = uaf.userId
 WHERE
-  a.answerId = ?;
-
+  a.answerId = ?;    
 `,
 };
